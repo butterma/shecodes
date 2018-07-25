@@ -1,13 +1,14 @@
 var createError = require('http-errors');
-var express = require('express');
+var express = require('express')
+,cors=require('cors')
+,app=express();
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var favicon =require('serve-favicon');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var app = express();
+var mongoose=require('mongoose');
+app.use(cors());
+//var app = express();
 
 var mongoose=require('mongoose');
 var passport=require('passport');
@@ -18,6 +19,7 @@ var session=require('express-session');
 var configDB=require('./config/database.js');
 require('./config/passport')(passport);
 
+mongoose.connect(configDB.url);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -37,6 +39,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+var usersRouter = require('./routes/users')(passport);
+var indexRouter = require('./routes/index');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
