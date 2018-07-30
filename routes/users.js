@@ -50,14 +50,30 @@ router.post('/signup',function(req,res){
 });
 
 /*login*/
-router.post('/login',passport.authenticate('local-login'),function(req,res){
-  debug(res.req.user.approved);
-  if(res.req.user.approved){
-    res.status(200).json({'user':'Login successfully'});
-  }else{
-    debug("user not approved");
-    res.status(404).send("User not approvrd yet");
+router.post('/login',function(req,res,next){
+  passport.authenticate('local-login',function(err,user,info){
+  //debug(res.req.user.approved);
+  if(err){
+    debug("error");
+    return next(err);
   }
+  if(!user){
+    debug("user not find");
+    return res.status(400).json({message:'authentication failed-user name or password is incorrect '});
+  }
+  req.login(user,loginErr=>{
+    if(loginErr){
+      return next(loginErr);
+    }
+   // if(res.req.user.approved){
+      debug("approved");
+      res.status(200).json({'user':'Login successfully'});
+   // }else{
+   //   debug("user not approved");
+   //   res.status(404).send("User not approvrd yet");
+   // }
+  });
+})(req,res,next);  
 });
 
 router.post('/sendMail',function(req,res){
