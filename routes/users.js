@@ -19,14 +19,24 @@ module.exports = function(passport){
 var router = express.Router();
 /* GET users listing. */
 
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
- /*User.REQUEST((err,users)=>{
+router.get('/', async(req, res)=> {
+  debug("in get");
+  /*User.REQUEST((users,err)=>{
    if(err)
+   {
+     debug("find error");
       debug(err);
+   }
   else
+  {
+    debug("return users list");
+    debug(users);
   res.json(users);
+  }
  });*/
+ users=await User.REQUEST();
+ debug(users);
+ res.json(users);
 });
 
 router.get('/:id',function(req,res){
