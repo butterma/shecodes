@@ -59,10 +59,13 @@ router.get('/:id',function(req,res){
 });
 
 router.post('/signup',upload.single('image'),async(req, res) =>{
+  debug("in post signup, user: ");
   let user=new User(req.body);
-  debug(user);
-  debug(req.body.username);
-  debug(user.username);
+  console.log("try");
+  user.image = req.file.path.slice(6);
+  console.log(user);
+  console.log("image: " + user.image);
+  
   user.save()
     .then(user=>{
       res.status(200).json({'user':'Signup successfully'});
@@ -172,7 +175,7 @@ router.post('/reset/:token',function(req,res){
          user.password = req.body.password;
          user.resetPasswordToken = undefined;
          user.resetPasswordExpires = undefined;
- 
+         console.log("reset");
          user.save(function(err) {
            req.logIn(user, function(err) {
              done(err, user);
