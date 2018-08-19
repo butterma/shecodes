@@ -4,6 +4,16 @@ var async=require('async');
 var crypto=require('crypto');
 var User=require('../model/user');
 var debug=require('debug')('shecodes:users');
+
+//***********for uploading an image*************/
+var multer  = require('multer');
+var storage = multer.diskStorage({
+  destination: './public/uploads/',
+  filename: function (re, file, cb) {
+    cb(null,'user' + Date.now() +'.' + file.mimetype.slice(6))}})
+var upload = multer({ storage: storage });
+//**********************************************/
+
 var transporter=nodemailer.createTransport({
   service:'gmail',
   secure:'false',
@@ -38,13 +48,17 @@ router.get('/:id',function(req,res){
   });*/
 });
 
-router.post('/signup',function(req,res){
+router.post('/signup',upload.single('image'),async(req, res) =>{
   let user=new User(req.body);
+  debug(user);
+  debug(req.body.username);
+  debug(user.username);
   user.save()
     .then(user=>{
       res.status(200).json({'user':'Signup successfully'});
     })
     .catch(err=>{
+      debug(err);
       res.status(400).send('Failed to create new record');
     });
 });

@@ -4,10 +4,6 @@ var Enum =require('enum');
 var bcrypt=require('bcrypt-nodejs');
 const Schema = mongo.Schema;
 
-//var roleEnum= new Enum(['Admin','Area manager','Branch manager','Course coordinator']);
-//var courseEnum=new Enum(['python','web','android','data analysis']);
-//var branchEnum=new Enum(['TAU','BGU','HUJI','google','cisco','IBM','wix','technion']);
-//module.exports = db => {
     var schema = new Schema({ 
         username: { type: String, required: true, unique: true, index: true },
         password: { type: String, required: true },
@@ -16,7 +12,8 @@ const Schema = mongo.Schema;
         branch: {type:String, enum:['TAU','BGU','HUJI','google','cisco','IBM','wix','technion']},
         approved:Boolean,
         resetPasswordToken: String,
-        resetPasswordExpires: Date
+        resetPasswordExpires: Date,
+        image: String
     });
 
     schema.pre('save', function(next) {
@@ -49,7 +46,7 @@ schema.methods.validPassword = function(password) {
     debug("check password validation");
     return result;
 };
-      // CRUD without the U
+// CRUD without the U
 schema.statics.CREATE = async function (str) {
         return this.find({username: str}).exec();
     }; 
