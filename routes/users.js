@@ -138,8 +138,7 @@ router.get('/reset/:token',function(req,res){
 router.post('/reset/:token',function(req,res){
  async.waterfall([
      function(done) {
-     console.log("post reset");
-       User.findOne({'resetPasswordToken': req.params.token,'resetPasswordExpires': { $gt: Date.now() } }, function(err, user) {
+       User.findOne({'resetPasswordToken': req.body.token,'resetPasswordExpires': { $gt: Date.now() } }, function(err, user) {
          if (!user) {
              console.log("can't find user");
            req.flash('error', 'Password reset token is invalid or has expired.');

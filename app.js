@@ -19,22 +19,24 @@ var session=require('express-session');
 var configDB=require('./config/database.js');
 require('./config/passport')(passport);
 
+let secret='iloveshecodesorganization';
 mongoose.connect(configDB.url);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser(secret));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
 
 app.use(session({
-  secret:'iloveshecodesorganization',
+  secret:secret,
   resave:true,
-  saveUninitialized:true
+  saveUninitialized:true,
+  cookie: {maxAge:900000, httpOnly:true,sameSite:true }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
