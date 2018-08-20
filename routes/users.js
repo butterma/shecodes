@@ -197,6 +197,27 @@ router.get('/delete/:id',function(req,res){
       res.json('Removed Successfully');
   });
 });
+
+router.post('/update/:id',async(req,res)=>{
+
+  User.findById(req.params.id,(err,user)=>{
+    if(!user)
+    return next(new Error('Could not load Document'));
+    else{
+      debug(user);
+      user.role=req.body.role;
+      user.branch=req.body.branch;
+      user.course=req.body.course;
+      user.approved=req.body.approved;
+
+      user.save().then(user=>{
+        res.json('Update done');
+      }).catch(err=>{
+        res.status(400).send('Update failed');
+      });
+    }
+  });
+});
 //module.exports=router;
 return router;
 };
