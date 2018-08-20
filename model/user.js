@@ -99,7 +99,8 @@ schema.statics.REQUEST=async function(){
         return;
     }
     // request by id as a hexadecimal string
-    if (args.length === 1 && typeof args === "string") {
+    debug(typeof arguments[0]);
+    if (arguments.length === 1 && typeof arguments[0] === "string") {
         debug("request: by ID");
         return this.findById(args[0]).exec();
     }

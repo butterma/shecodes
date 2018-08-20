@@ -49,14 +49,14 @@ router.get('/', async(req, res)=> {
  res.json(users);
 });
 
-router.get('/:id',function(req,res){
-  /*User.REQUEST(req.params.id,(err,user)=>{
-    if(err)
-      debug(err);
-    else
+router.get('/:id',async(req,res)=>{
+  let user= await User.REQUEST(req.params.id);//,(err,user)=>{
+  debug(user);  
+  if(user)
       res.json(user);
-  });*/
-});
+    else
+     debug(err);
+  });
 
 router.post('/signup',upload.single('image'),async(req, res) =>{
   let user=new User(req.body);
@@ -184,6 +184,15 @@ router.post('/reset/:token',function(req,res){
   ], function(err) {
      res.redirect('/');
    });
+});
+
+router.get('/delete/:id',function(req,res){
+  User.findByIdAndRemove({_id:req.params.id},(err,user)=>{
+    if(err)
+      res.json(err);
+      else
+      res.json('Removed Successfully');
+  });
 });
 //module.exports=router;
 return router;
