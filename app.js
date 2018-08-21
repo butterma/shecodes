@@ -1,14 +1,15 @@
 var createError = require('http-errors');
-var express = require('express')
-,cors=require('cors')
-,app=express();
-var path = require('path');
+var express = require('express');
+const path = require('path')
+,cors=require('cors');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var favicon =require('serve-favicon');
 var mongoose=require('mongoose');
-app.use(cors());
-//var app = express();
+const debug = require('debug')('shecodes:app');
+const rootRouter = require('./routes/index');
+const userRouter = require('./routes/users');
+const chatRouter = require('./routes/chat');
 
 var mongoose=require('mongoose');
 var passport=require('passport');
@@ -19,49 +20,113 @@ var session=require('express-session');
 var configDB=require('./config/database.js');
 require('./config/passport')(passport);
 
-let secret='iloveshecodesorganization';
-mongoose.connect(configDB.url);
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+mongoose.connect(configDB.url, {useNewUrlParser: true});
 
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser(secret));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
 
-app.use(session({
-  secret:secret,
-  resave:true,
-  saveUninitialized:true,
-  cookie: {maxAge:900000, httpOnly:true,sameSite:true }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
+module.exports = async (server) => {
+  let app = express();
+  // view engine setup
+  app.set('views', path.join(__dirname, 'views'));
+  app.set('view engine', 'ejs');
+  app.use(cors());
+  app.use(logger('dev'));
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  
+  let secret='iloveshecodesorganization';
+  app.use(cookieParser(secret));
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
+  app.use(session({
+    secret:secret,
+    resave:true,
+    saveUninitialized:true,
+    cookie: {maxAge:900000, httpOnly:true,sameSite:true }
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(flash());
+  
+  var usersRouter = require('./routes/users')(passport);
+  var indexRouter = require('./routes/index');
+  
+  app.use('/', indexRouter);
+  app.use('/users', usersRouter);
+  
+  // catch 404 and forward to error handler
+  app.use(function(req, res, next) {
+    next(createError(404));
+  });
+  
+  // error handler
+  app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+  
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+  });
 
-var usersRouter = require('./routes/users')(passport);
-var indexRouter = require('./routes/index');
+  /**
+   * Create Socket.io server.
+   */
+  const io = require('socket.io')(server);
+  
+  require('./socket/chat')(app, io);
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+  // Add basic middleware to express
+  app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.gif')));
+  app.use(logger('dev')); // Log every http message (even favicon request)
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  debug("app line 84");
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+  // example for inline express middleware logging - adding session middleware
+  app.objSession = session(secret);
+  app.use((req, res, next) => {
+      app.objSession(req, res, function () {
+          debug("Session middleware: " + !!req.session + " ID=" + req.sessionID);
+          next();
+      });
+  });
+  debug("app line 94");
 
-module.exports = app;
+
+  // Parsing middleware: cookies, json and url-encoded body
+  app.cookieParser = cookieParser(secret);
+  app.use(app.cookieParser);
+  app.use(express.json());
+  app.use(express.urlencoded({extended: false}));
+
+  // Static content middleware
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use('/chat', express.static(path.join(__dirname, 'chat', 'dist', 'chat')));
+
+  app.use('/', rootRouter);
+  app.use('/users', userRouter);
+  app.use('/msgs', chatRouter);
+
+  // catch 404 and forward to error handler
+  app.use(function (req, res, next) {
+      let err = new Error(`Not Found: ${req.url}`);
+      err.status = 404;
+      //debug(err);
+      next(err);
+  });
+
+  // error handler
+  app.use(function (err, req, res) {
+      // set locals, only providing error in development
+      res.locals.message = err.message;
+      res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+      // render the error page
+      res.status(err.status || 500);
+      //debug(err);
+      res.render('error');
+  });
+
+  return app;
+};

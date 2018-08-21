@@ -2,6 +2,7 @@ const debug = require('debug')("shecodes:user");
 const mongo = require('mongoose');
 var Enum =require('enum');
 var bcrypt=require('bcrypt-nodejs');
+
 const Schema = mongo.Schema;
 
     var schema = new Schema({ 
