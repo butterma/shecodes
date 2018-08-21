@@ -11,5 +11,7 @@ module.exports = db => {
         room: String
     });
 
+
+    
     db.model('Chat', chatSchema, 'chat');
 };
