@@ -80,6 +80,7 @@ router.post('/signup',upload.single('image'),async(req, res) =>{
 router.post('/login',function(req,res,next){
   passport.authenticate('local-login',function(err,user,info){
   //debug(res.req.user.approved);
+  
   if(err){
     debug("error");
     return next(err);
@@ -200,6 +201,7 @@ router.get('/delete/:id',function(req,res){
 
 router.post('/update/:id',async(req,res)=>{
 
+  debug(req.session);
   User.findById(req.params.id,(err,user)=>{
     if(!user)
     return next(new Error('Could not load Document'));
