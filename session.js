@@ -1,7 +1,7 @@
 const session = require('express-session');
 const mongo = require('mongoose');
 const connectMongo = require('connect-mongo');
-const debug = require('debug')('lab9:session');
+const debug = require('debug')('shecodes:session');
 
 // Session backend DB connectivity configuration
 const mongoDomain = "mongodb://127.0.0.1";

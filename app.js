@@ -58,15 +58,6 @@ module.exports = async (server) => {
     next(createError(404));
   });
   
-
-  /**
-   * Create Socket.io server.
-   */
-  const io = require('socket.io')(server);
-  
-  require('./socket/chat')(app, io);
-
-
   // Add basic middleware to express
   app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.gif')));
   app.use(logger('dev')); // Log every http message (even favicon request)
@@ -93,8 +84,6 @@ module.exports = async (server) => {
   app.use(express.static(path.join(__dirname, 'public')));
   app.use('/chat', express.static(path.join(__dirname, 'chat', 'dist', 'chat')));
 
-  app.use('/', rootRouter);
-  app.use('/users', userRouter);
   app.use('/msgs', chatRouter);
 
   // catch 404 and forward to error handler
