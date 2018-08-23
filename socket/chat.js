@@ -39,7 +39,7 @@ module.exports = (app, io) => {
         }
 
         function isLogin() {
-            if (req.headers.cookie) debug("Checking user: " + req.headers.cookie.sid);
+            if (req.headers.cookie) debug("Checking user: " + req.headers.cookie);
             return currentRoom !== undefined;
         }
 
@@ -54,12 +54,12 @@ module.exports = (app, io) => {
         });
         
         //Listens for new user
-        socket.on('join', (data, fn) => {
+        socket.on('join', (data) => {
             if (!isLogin()) {
                 debug("socket login: " + req.headers.cookie + " - " + JSON.stringify(data));
                 //Emit the rooms array
                 debug("socket login response - sending: " + JSON.stringify(rooms));
-                fn({ rooms: rooms });
+               // fn({ rooms: rooms });
                 //New user joins the default room
                 currentRoom = data.room = defaultRoom;
                 socket.join(currentRoom);
@@ -67,7 +67,7 @@ module.exports = (app, io) => {
                 debug('emit in ' + currentRoom + ", joined: " + JSON.stringify(data));
                 socket.to(currentRoom).emit('joined', data);
             } else {
-                fn({ rooms: [] });
+               // fn({ rooms: [] });
             }
         });
 
