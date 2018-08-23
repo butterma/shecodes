@@ -10,7 +10,7 @@ module.exports = (app, io) => {
 
     chat.on('error', error => { debug('Chat error ' + error); });
 
-    chat.use((socket, next) => {
+    /*chat.use((socket, next) => {
         //console.log(socket);
         let req = socket.handshake;
        // let res = { end: () => { } };
@@ -21,7 +21,7 @@ module.exports = (app, io) => {
                 next();
             });
         });*/
-    });
+    //});
 
     debug("here 3");
     chat.on('connection', socket => {
@@ -31,9 +31,9 @@ module.exports = (app, io) => {
         //socket.set('transports', ['websocket']);
         let req = socket.handshake;
         let currentRoom = undefined;
-        debug("socket connection: " + socket.id + " - " + JSON.stringify(req.session));
+        debug("socket connection: " + socket.id + " - " + JSON.stringify(req.headers.cookie));
 
-        if (!req.session || !req.session.user) {
+        if (!req.headers.cookie) {
             debug("Unauthorized connection!");
             socket.disconnect(true);
             return;
