@@ -74,13 +74,13 @@ module.exports = async (server) => {
   debug("app line 84");
 
   // example for inline express middleware logging - adding session middleware
-  app.objSession = session(secret);
+  /*app.objSession = session(secret);
   app.use((req, res, next) => {
       app.objSession(req, res, function () {
           debug("Session middleware: " + !!req.session + " ID=" + req.sessionID);
           next();
       });
-  });
+  });*/
   debug("app line 94");
 
 

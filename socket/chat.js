@@ -14,17 +14,21 @@ module.exports = (app, io) => {
     chat.use((socket, next) => {
         //console.log(socket);
         let req = socket.handshake;
-        let res = { end: () => { } };
-        app.cookieParser(req, res, () => {
-            app.objSession(req, res, function () {
+       // let res = { end: () => { } };
+        next();
+       /* app.cookieParser(req, res, () => {
+            app.session(req, res, function () {
                 debug("Chat middleware: " + JSON.stringify(socket.id) + " ID=" + req.sessionID + " user=" + req.session.user);
                 next();
             });
-        });
+        });*/
     });
 
     debug("here 3");
     chat.on('connection', socket => {
+        
+        socket.on('disconnect', () => { debug("socket disconnect: " + socket.id); });
+
         //socket.set('transports', ['websocket']);
         let req = socket.handshake;
         let currentRoom = undefined;
@@ -35,8 +39,6 @@ module.exports = (app, io) => {
             socket.disconnect(true);
             return;
         }
-
-        socket.on('disconnect', () => { debug("socket disconnect: " + socket.id); });
 
         function isLogin() {
             if (req.session) debug("Checking user: " + req.session.user);
@@ -52,6 +54,11 @@ module.exports = (app, io) => {
                 currentRoom = undefined;
             }
         });
+        
+        socket.on('join',data=>{
+            debug(data);
+        });
+
 
         //Listens for new user
         socket.on('login', (data, fn) => {
