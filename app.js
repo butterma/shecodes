@@ -74,14 +74,13 @@ module.exports = async (server) => {
   debug("app line 84");
 
   // example for inline express middleware logging - adding session middleware
-  /*app.objSession = session(secret);
+  app.objSession = session(secret);
   app.use((req, res, next) => {
       app.objSession(req, res, function () {
           debug("Session middleware: " + !!req.session + " ID=" + req.sessionID);
           next();
       });
-  });*/
-  debug("app line 94");
+  });
 
 
   // Parsing middleware: cookies, json and url-encoded body
@@ -109,7 +108,6 @@ module.exports = async (server) => {
   // error handler
   app.use(function (err, req, res) {
       // set locals, only providing error in development
-      debug("req.app.get: ");
       debug(req.app.get);
       res.locals.message = err.message;
       res.locals.error = req.app.get('env') === 'development' ? err : {};
