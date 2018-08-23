@@ -1,5 +1,4 @@
 const debug = require('debug')("shecodes:socket");
-//const io = socket.listen(server);
 const Chat = require('../model/chat');
 
 module.exports = (app, io) => {
