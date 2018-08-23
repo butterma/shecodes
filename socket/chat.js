@@ -23,7 +23,6 @@ module.exports = (app, io) => {
         });*/
     //});
 
-    debug("here 3");
     chat.on('connection', socket => {
         
         socket.on('disconnect', () => { debug("socket disconnect: " + socket.id); });
