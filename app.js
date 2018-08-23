@@ -62,7 +62,7 @@ module.exports = async (server) => {
   /**
    * Create Socket.io server.
    */
-  const io = require('socket.io').listen(server);
+  const io = require('socket.io')(server);
   
   require('./socket/chat')(app, io);
 
