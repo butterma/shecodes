@@ -1,17 +1,19 @@
-const mongo = require("mongoose");
+const mongo = require('mongoose');
 const debug = require('debug')("shecodes:chat");
-const Schema = mongo.Schema;
 
-module.exports = db => {
-    debug('Initializing chat model');
-    const chatSchema = new Schema({
+var schema = new mongo.Schema({
         created: Date,
         content: String,
         username: String,
         room: String
     });
-
-
+    schema.statics.CREATE=async function (chat) {
+        debug(chat);
+        return this.create(chat);
+     };
     
-    db.model('Chat', chatSchema, 'chat');
-};
+   
+
+debug("Chat model created");
+module.exports=mongo.model('Chat',schema);
+

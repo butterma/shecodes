@@ -1,5 +1,5 @@
 const debug = require('debug')("shecodes:socket");
-const Chat = require('../model/chat');
+var Chat = require('../model/chat');
 
 module.exports = (app, io) => {
     const chat = io.of("/chat");//should be of instead of require
@@ -92,10 +92,11 @@ module.exports = (app, io) => {
             if (isLogin()) {
                 //Create message and Save it to database
                 debug("socket message: saving");
+                debug(data);
                 try {
-                    let msg = await Chat.create({
-                        username: data.username,
-                        content: data.content,
+                    let msg = await Chat.CREATE({
+                        username: data.user,
+                        content: data.message,
                         room: currentRoom,
                         created: new Date()
                     });
