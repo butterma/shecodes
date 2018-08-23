@@ -5,8 +5,8 @@ module.exports = (app, io) => {
     const chat = io.of("/chat");//should be of instead of require
 
     // "Globals"
-    const defaultRoom = 'general';
-    const rooms = ["general", "angular", "socket.io", "express", "node", "mongo"];
+    const defaultRoom = 'Web';
+    const rooms = ["Web", "Android", "Python", "Data analysis"];
 
     chat.on('error', error => { debug('Chat error ' + error); });
 
@@ -40,7 +40,7 @@ module.exports = (app, io) => {
         }
 
         function isLogin() {
-            if (req.session) debug("Checking user: " + req.session.user);
+            if (req.headers.cookie) debug("Checking user: " + req.headers.cookie.sid);
             return currentRoom !== undefined;
         }
 
@@ -54,15 +54,10 @@ module.exports = (app, io) => {
             }
         });
         
-        socket.on('join',data=>{
-            debug(data);
-        });
-
-
         //Listens for new user
-        socket.on('login', (data, fn) => {
+        socket.on('join', (data, fn) => {
             if (!isLogin()) {
-                debug("socket login: " + req.session.user + " - " + JSON.stringify(data));
+                debug("socket login: " + req.headers.cookie + " - " + JSON.stringify(data));
                 //Emit the rooms array
                 debug("socket login response - sending: " + JSON.stringify(rooms));
                 fn({ rooms: rooms });
@@ -135,6 +130,7 @@ io.sockets.on('connection', (socket) => {
                 }
             });
             if (count == 0) {
+                //create new room
                 chatRooms.insert({ name: data.room, messages: [] });
             }
         });
