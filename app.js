@@ -62,8 +62,6 @@ module.exports = async (server) => {
   app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.gif')));
   app.use(logger('dev')); // Log every http message (even favicon request)
 
-  debug("app line 84");
-
   // example for inline express middleware logging - adding session middleware
   app.objSession = session(secret);
   app.use((req, res, next) => {
