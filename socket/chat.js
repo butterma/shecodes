@@ -107,6 +107,9 @@ module.exports = (app, io) => {
                 }
             }
         });
+        socket.on('typing', (data) => {
+            socket.broadcast.in(data.room).emit('typing', { data: data, isTyping: true });
+        });
     });
 };
 

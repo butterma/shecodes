@@ -7,8 +7,6 @@ var logger = require('morgan');
 var favicon =require('serve-favicon');
 var mongoose=require('mongoose');
 const debug = require('debug')('shecodes:app');
-const rootRouter = require('./routes/index');
-const userRouter = require('./routes/users');
 const chatRouter = require('./routes/chat');
 
 var mongoose=require('mongoose');
@@ -62,8 +60,6 @@ module.exports = async (server) => {
   app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.gif')));
   app.use(logger('dev')); // Log every http message (even favicon request)
 
-  debug("app line 84");
-
   // example for inline express middleware logging - adding session middleware
   app.objSession = session(secret);
   app.use((req, res, next) => {
@@ -85,7 +81,7 @@ module.exports = async (server) => {
   app.use('/chat', express.static(path.join(__dirname, 'chat', 'dist', 'chat')));
 
   app.use('/msgs', chatRouter);
-
+  app.use('/users',usersRouter);
   // catch 404 and forward to error handler
   app.use(function (req, res, next) {
       let err = new Error(`Not Found: ${req.url}`);

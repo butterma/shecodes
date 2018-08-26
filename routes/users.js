@@ -28,28 +28,21 @@ var transporter=nodemailer.createTransport({
 module.exports = function(passport){
 var router = express.Router();
 /* GET users listing. */
+router.get('/logout',function(req,res){
+  req.session.destroy();
+  debug("in logout");
+  res.json("logout success");
+});
 
 router.get('/', async(req, res)=> {
   debug("in get");
-  /*User.REQUEST((users,err)=>{
-   if(err)
-   {
-     debug("find error");
-      debug(err);
-   }
-  else
-  {
-    debug("return users list");
-    debug(users);
-  res.json(users);
-  }
- });*/
  users=await User.REQUEST();
  debug(users);
  res.json(users);
 });
 
 router.get('/:id',async(req,res)=>{
+  debug("in get id");
   let user= await User.REQUEST(req.params.id);//,(err,user)=>{
   debug(user);  
   if(user)
@@ -221,6 +214,7 @@ router.post('/update/:id',async(req,res)=>{
   });
 });
 //module.exports=router;
+
 return router;
 };
 //module.exports = router,passport;
