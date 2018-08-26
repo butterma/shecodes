@@ -215,6 +215,30 @@ router.post('/update/:id',async(req,res)=>{
 });
 //module.exports=router;
 
+// facebook -------------------------------
+
+        // send to facebook to do the authentication
+        router.get('/auth/facebook', passport.authenticate('facebook', { scope : ['public_profile', 'email'] }));
+
+        // handle the callback after facebook has authenticated the user
+        router.get('/auth/facebook/callback',
+            passport.authenticate('facebook', {
+                successRedirect : '/profile',
+                failureRedirect : '/'
+            }));
+
+
+    // google ---------------------------------
+
+        // send to google to do the authentication
+        router.get('/auth/google', passport.authenticate('google', { scope :'https://www.google.com/m8/feeds'}));
+
+        // the callback after google has authenticated the user
+        router.get('/auth/google/callback',
+            console.log("here")/*passport.authenticate('google', {
+                successRedirect : '/',
+                failureRedirect : '/login'
+            })*/);
 return router;
 };
 //module.exports = router,passport;
