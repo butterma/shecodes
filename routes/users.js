@@ -231,14 +231,17 @@ router.post('/update/:id',async(req,res)=>{
     // google ---------------------------------
 
         // send to google to do the authentication
-        router.get('/auth/google', passport.authenticate('google', { scope :'https://www.google.com/m8/feeds'}));
+        router.get('/auth/google',() => {
+          debug("in get google");
+          passport.authenticate('google', 
+          { scope :['https://www.googleapis.com/auth/plus.login','https://www.googleapis.com/auth/plus.profile.emails.read']});});
 
         // the callback after google has authenticated the user
         router.get('/auth/google/callback',
-            console.log("here")/*passport.authenticate('google', {
+            passport.authenticate('google', {
                 successRedirect : '/',
                 failureRedirect : '/login'
-            })*/);
+            }));
 return router;
 };
 //module.exports = router,passport;
