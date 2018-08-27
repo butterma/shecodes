@@ -24,6 +24,7 @@ router.get('/', async (req, res) => {
     //res.json([]);
 });
 
-router.post('/uploads' ,function(req,res){
+router.post('/uploads' ,function (req,res) {
     debug("in post file up loader");
+    debug(req);
 });

@@ -229,12 +229,22 @@ router.post('/update/:id',async(req,res)=>{
 
 
     // google ---------------------------------
+    router.get('/auth/google', 
+    passport.authenticate('google', {scope: ['profile', 'email']})
+);
 
+/*app.get('/auth/google/callback', 
+    passport.authenticate('google', {
+        successRedirect: '/profile',
+        failureRedirect: '/fail'
+    })
+);
         // send to google to do the authentication
         router.get('/auth/google',() => {
           debug("in get google");
           passport.authenticate('google', 
-          { scope :['https://www.googleapis.com/auth/plus.login','https://www.googleapis.com/auth/plus.profile.emails.read']});});
+          { scope :['https://www.googleapis.com/auth/plus.login',
+          'https://www.googleapis.com/auth/plus.profile.emails.read']});});*/
 
         // the callback after google has authenticated the user
         router.get('/auth/google/callback',
