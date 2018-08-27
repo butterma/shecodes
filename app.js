@@ -7,8 +7,6 @@ var logger = require('morgan');
 var favicon =require('serve-favicon');
 var mongoose=require('mongoose');
 const debug = require('debug')('shecodes:app');
-const rootRouter = require('./routes/index');
-const userRouter = require('./routes/users');
 const chatRouter = require('./routes/chat');
 
 var mongoose=require('mongoose');
@@ -83,7 +81,7 @@ module.exports = async (server) => {
   app.use('/chat', express.static(path.join(__dirname, 'chat', 'dist', 'chat')));
 
   app.use('/msgs', chatRouter);
-
+  app.use('/users',usersRouter);
   // catch 404 and forward to error handler
   app.use(function (req, res, next) {
       let err = new Error(`Not Found: ${req.url}`);
