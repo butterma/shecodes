@@ -14,6 +14,8 @@ var flash=require('connect-flash');
 var bodyParser=require('body-parser');
 var session=require('express-session');
 
+//var siofu=require('socketio-file-upload');
+
 var configDB=require('./config/database.js');
 require('./config/passport')(passport);
 
@@ -30,6 +32,7 @@ module.exports = async (server) => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   
+  //app.use(siofu);
   let secret='iloveshecodesorganization';
   app.use(cookieParser(secret));
   app.use(express.static(path.join(__dirname, 'public')));

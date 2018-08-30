@@ -1,9 +1,10 @@
 const debug = require('debug')("shecodes:socket");
 var Chat = require('../model/chat');
+var siofu = require('socketio-file-upload');
 
 module.exports = (app, io) => {
-    const chat = io.of("/chat");//should be of instead of require
-
+    const chat = io.of("/chat");
+//app.use(siofu.router);
     // "Globals"
     const defaultRoom = 'Web';
     const rooms = ["Web", "Android", "Python", "Data analysis"];
@@ -22,8 +23,13 @@ module.exports = (app, io) => {
             });
         });*/
     //});
+    
 
     chat.on('connection', socket => {
+        
+        //var uploader = new siofu();
+        //uploader.dir = "/uploads";
+        //uploader.listen(socket);
         
         socket.on('disconnect', () => { debug("socket disconnect: " + socket.id); });
 
