@@ -276,18 +276,18 @@ module.exports = function(passport) {
         debug("GoogleStrategy");
         // asynchronous
         process.nextTick(function() {
-
+            debug(profile.id);
             // check if the user is already logged in
             if (!req.user) {
 
-                User.findOne({ 'google.id' : profile.id }, function(err, user) {
+                User.findOne({ 'username' : profile.emails[0].value}, function(err, user) {
                     if (err)
                         return done(err);
 
                     if (user) {
-
+                            debug("find user")
                         // if there is a user id already but no token (user was linked at one point and then removed)
-                        if (!user.google.token) {
+                       /* if (!user.google.token) {
                             user.google.token = token;
                             user.google.name  = profile.displayName;
                             user.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
@@ -298,16 +298,16 @@ module.exports = function(passport) {
                                     
                                 return done(null, user);
                             });
-                        }
+                        }*/
 
                         return done(null, user);
                     } else {
                         var newUser          = new User();
 
-                        newUser.google.id    = profile.id;
-                        newUser.google.token = token;
-                        newUser.google.name  = profile.displayName;
-                        newUser.google.email = (profile.emails[0].value || '').toLowerCase(); // pull the first email
+                        //newUser.id    = profile.id;
+                        //newUser.google.token = token;
+                      //  newUser.username  = profile.displayName;
+                        newUser.username = (profile.emails[0].value || '').toLowerCase(); // pull the first email
 
                         newUser.save(function(err) {
                             if (err)

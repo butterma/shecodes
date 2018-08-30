@@ -7,7 +7,7 @@ const Schema = mongo.Schema;
 
     var schema = new Schema({ 
         username: { type: String, required: true, unique: true, index: true },
-        password: { type: String, required: true },
+        password: { type: String },
         role: {type: String,enum:['Admin','Area manager','Branch manager','Course coordinator']},
         course: {type:String,enum:['python','web','android','data analysis']},
         branch: {type:String, enum:['TAU','BGU','HUJI','google','cisco','IBM','wix','technion']},
@@ -104,16 +104,26 @@ schema.statics.REQUEST=async function(){
     if (arguments.length === 1 && typeof arguments[0] === "string") {
         debug("request: by ID");
         return this.findById(args[0]).exec();
+        
     }
     // There is no callback - bring requested at once
     debug(`request: without callback: ${JSON.stringify(args)}`);
     return this.find(...args).exec();
 };
+
+schema.statics.REQUEST_BY_NAME=async function(){
+    
+    const args = Array.from(arguments); 
+    debug(typeof arguments[0]);
+    if (arguments.length === 1 && typeof arguments[0] === "string") {
+        debug("request: by Name");
+        return this.findOne( {username: args[0]}).exec();        
+    }
+};
     schema.statics.DELETE = async function(id) {
         return this.findByIdAndRemove(id).exec();
     };
-
-   // db.model('User', schema );
+    
     debug("User model created");
 //};
 module.exports=mongo.model('User',schema);

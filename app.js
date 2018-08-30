@@ -30,16 +30,9 @@ module.exports = async (server) => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   
-  let secret='iloveshecodesorganization';
-  app.use(cookieParser(secret));
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
-  app.use(session({
-    secret:secret,
-    resave:true,
-    saveUninitialized:true,
-    cookie: {maxAge:900000, httpOnly:true,sameSite:true }
-  }));
+ 
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(flash());
@@ -61,10 +54,13 @@ module.exports = async (server) => {
   app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.gif')));
   app.use(logger('dev')); // Log every http message (even favicon request)
 
+  
+  let secret='iloveshecodesorganization';
   // example for inline express middleware logging - adding session middleware
   app.objSession = session(secret);
   app.use((req, res, next) => {
       app.objSession(req, res, function () {
+          debug(req);
           debug("Session middleware: " + !!req.session + " ID=" + req.sessionID);
           next();
       });
@@ -75,7 +71,13 @@ module.exports = async (server) => {
   app.cookieParser = cookieParser(secret);
   app.use(app.cookieParser);
   app.use(express.json());
-  app.use(express.urlencoded({extended: false}));
+  app.use(express.urlencoded({extended: false})); 
+  app.use(session({
+    secret:secret,
+    resave:true,
+    saveUninitialized:true,
+    cookie: {maxAge:900000, httpOnly:true,sameSite:true }
+  }));
 
   // Static content middleware
   app.use(express.static(path.join(__dirname, 'public')));

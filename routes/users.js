@@ -29,7 +29,9 @@ module.exports = function(passport){
 var router = express.Router();
 /* GET users listing. */
 router.get('/logout',function(req,res){
+  if(req.session){
   req.session.destroy();
+  }
   debug("in logout");
   res.json("logout success");
 });
@@ -51,11 +53,22 @@ router.get('/:id',async(req,res)=>{
      debug(err);
   });
 
+router.get('/byname/:username',async(req,res)=>{
+  debug("in get name");
+  let user=await User.REQUEST_BY_NAME(req.params.username);
+  debug(user);
+  if(user)
+  res.json(user);
+  else
+  debug(err);
+});
+
 router.post('/signup',upload.single('image'),async(req, res) =>{
   debug("in post signup, user: ");
   let user=new User(req.body);
   console.log("try");
-  user.image = req.file.path.slice(6);
+  if (!user.image)
+    user.image = req.file.path.slice(6);
   console.log(user);
   console.log("image: " + user.image);
   
@@ -229,29 +242,43 @@ router.post('/update/:id',async(req,res)=>{
 
 
     // google ---------------------------------
-    router.get('/auth/google', 
+/*    router.get('/auth/google', 
     passport.authenticate('google', {scope: ['profile', 'email']})
 );
 
-/*app.get('/auth/google/callback', 
+app.get('/auth/google/callback', 
     passport.authenticate('google', {
         successRedirect: '/profile',
         failureRedirect: '/fail'
     })
-);
+);*/
         // send to google to do the authentication
-        router.get('/auth/google',() => {
-          debug("in get google");
-          passport.authenticate('google', 
-          { scope :['https://www.googleapis.com/auth/plus.login',
-          'https://www.googleapis.com/auth/plus.profile.emails.read']});});*/
+        router.get('/auth/google', passport.authenticate('google', 
+          { scope :['profile','email']})
+        );
 
         // the callback after google has authenticated the user
-        router.get('/auth/google/callback',
-            passport.authenticate('google', {
-                successRedirect : '/',
-                failureRedirect : '/login'
-            }));
+       
+        router.get('/auth/google/callback', function(req,res,next){
+          passport.authenticate('google',function(err,user,info) {
+              if(err){
+                debug("error");
+                return next(err);
+              }
+              if(!user){
+                debug("user not find");
+                return res.status(400).json({message:'authentication failed-user name or password is incorrect '});
+              }
+              req.login(user,loginErr=>{
+                if(loginErr){
+                  return next(loginErr);
+                }
+               // if(res.req.user.approved){
+                 debug(req);
+                  res.status(200).json({'user':user.username});
+            });
+          })(req,res,next);
+        });
 return router;
-};
+}
 //module.exports = router,passport;
