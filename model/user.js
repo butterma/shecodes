@@ -14,7 +14,8 @@ const Schema = mongo.Schema;
         approved:Boolean,
         resetPasswordToken: String,
         resetPasswordExpires: Date,
-        image: String
+        image: String,
+        forums: String
     });
 
     schema.pre('save', function(next) {
@@ -23,6 +24,7 @@ const Schema = mongo.Schema;
       
         if (!user.isModified('password')) return next();
        console.log("update password");
+       this.forums[0] = this.course;
         bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
           if (err) return next(err);
       
