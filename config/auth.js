@@ -12,7 +12,7 @@ module.exports = {
     'googleAuth' : {
         'clientID'         : '49782137538-l0tbqhpf1tqgu4bq8kd967454ln0fmad.apps.googleusercontent.com',
         'clientSecret'     : 'cuugNzgoa0VxpZQmvTzEGGYT',
-        'callbackURL'      : 'http://localhost:3000/auth/google/callback'
+        'callbackURL'      : 'http://localhost:3000/users/auth/google/callback'
     }
 
 };
