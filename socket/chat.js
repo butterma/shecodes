@@ -104,7 +104,8 @@ module.exports = (app, io) => {
                         username: data.user,
                         content: data.message,
                         room: currentRoom,
-                        created: new Date()
+                        created: new Date(),
+                        file: data.file
                     });
                     debug('emit in ' + currentRoom + ", message: " + JSON.stringify(msg));
                     socket.to(currentRoom).emit('message', msg)

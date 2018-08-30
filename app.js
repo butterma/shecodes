@@ -32,12 +32,9 @@ module.exports = async (server) => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   
-<<<<<<< HEAD
   //app.use(siofu);
   let secret='iloveshecodesorganization';
   app.use(cookieParser(secret));
-=======
->>>>>>> c49c56052d1dc4c69eedce14c230b5ab98b6c95a
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
  
@@ -63,7 +60,6 @@ module.exports = async (server) => {
   app.use(logger('dev')); // Log every http message (even favicon request)
 
   
-  let secret='iloveshecodesorganization';
   // example for inline express middleware logging - adding session middleware
   app.objSession = session(secret);
   app.use((req, res, next) => {
