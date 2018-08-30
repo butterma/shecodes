@@ -34,6 +34,9 @@ var http = require('http');
    * Listen on provided port, on all network interfaces.
    */
 
+   
+  var siofu = require('socketio-file-upload');
+  app.use(siofu.router);
   server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);

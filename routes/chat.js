@@ -26,5 +26,5 @@ router.get('/', async (req, res) => {
 
 router.post('/uploads' ,function (req,res) {
     debug("in post file up loader");
-    debug(req);
+    res.json("file uploaded succesfully")
 });

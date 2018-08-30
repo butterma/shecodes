@@ -7,14 +7,15 @@ const Schema = mongo.Schema;
 
     var schema = new Schema({ 
         username: { type: String, required: true, unique: true, index: true },
-        password: { type: String },
+        password: { type: String, required: true },
         role: {type: String,enum:['Admin','Area manager','Branch manager','Course coordinator']},
         course: {type:String,enum:['python','web','android','data analysis']},
         branch: {type:String, enum:['TAU','BGU','HUJI','google','cisco','IBM','wix','technion']},
         approved:Boolean,
         resetPasswordToken: String,
         resetPasswordExpires: Date,
-        image: String
+        image: String,
+        forums: String
     });
 
     schema.pre('save', function(next) {
@@ -23,6 +24,7 @@ const Schema = mongo.Schema;
       
         if (!user.isModified('password')) return next();
        console.log("update password");
+       this.forums[0] = this.course;
         bcrypt.genSalt(SALT_FACTOR, function(err, salt) {
           if (err) return next(err);
       
@@ -104,26 +106,16 @@ schema.statics.REQUEST=async function(){
     if (arguments.length === 1 && typeof arguments[0] === "string") {
         debug("request: by ID");
         return this.findById(args[0]).exec();
-        
     }
     // There is no callback - bring requested at once
     debug(`request: without callback: ${JSON.stringify(args)}`);
     return this.find(...args).exec();
 };
-
-schema.statics.REQUEST_BY_NAME=async function(){
-    
-    const args = Array.from(arguments); 
-    debug(typeof arguments[0]);
-    if (arguments.length === 1 && typeof arguments[0] === "string") {
-        debug("request: by Name");
-        return this.findOne( {username: args[0]}).exec();        
-    }
-};
     schema.statics.DELETE = async function(id) {
         return this.findByIdAndRemove(id).exec();
     };
-    
+
+   // db.model('User', schema );
     debug("User model created");
 //};
 module.exports=mongo.model('User',schema);
