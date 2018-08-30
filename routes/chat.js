@@ -5,8 +5,8 @@ const Chat = require('../model/chat');
 router.get('/', async (req, res) => {
     debug('INFO: msgs' + JSON.stringify(req.query));
     if (!req.session || !req.session.user) {
-        //res.json("not logged on");
-      //  res.json([]);
+        res.json("not logged on");
+        res.json([]);
         return;
     }
     debug('INFO: msgs authorized');
@@ -15,13 +15,13 @@ router.get('/', async (req, res) => {
         msgs = await Chat.find({'room': req.query.room}).exec();
         debug('Got from chat DB: ' + JSON.stringify(msgs));
         if (msgs instanceof Array) {
-           // res.json(msgs);
+            res.json(msgs);
             return;
         }
     } catch (err) {
             debug('Error getting from chat DB: ' + JSON.stringify(err));
     }
-    //res.json([]);
+    res.json([]);
 });
 
 router.post('/uploads' ,function (req,res) {
