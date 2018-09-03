@@ -44,7 +44,42 @@ router.get('/:room',async (req,res)=>{
     }
     res.json([]);
 });
+
 router.post('/uploads' ,function (req,res) {
     debug("in post file up loader");
     res.json("file uploaded succesfully")
 });
+
+router.post('/like/:id', function(req,res) {
+    Chat.findById(req.params.id,(err,msg)=>{
+        if(!msg)
+        return next(new Error('Could not load Document'));
+        else{
+          debug(msg);
+          msg.likes.push(req.params.username);
+    
+          msg.save().then(msg=>{
+            res.json('Update chat done');
+          }).catch(err=>{
+            res.status(400).send('Update chat failed');
+          });
+        }
+      });
+})
+
+router.post('/dslike/:id', function(req,res) {
+    Chat.findById(req.params.id,(err,msg)=>{
+        if(!msg)
+        return next(new Error('Could not load Document'));
+        else{
+          debug(msg);
+          msg.dislikes.push(req.params.username);
+    
+          msg.save().then(msg=>{
+            res.json('Update chat done');
+          }).catch(err=>{
+            res.status(400).send('Update chat failed');
+          });
+        }
+      });
+})

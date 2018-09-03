@@ -6,7 +6,9 @@ var schema = new mongo.Schema({
         content: String,
         username: String,
         room: String,
-        file: Buffer
+        file: Buffer,
+        likes: Array,
+        dislikes:Array
     });
 
     schema.statics.CREATE=async function (chat) {
