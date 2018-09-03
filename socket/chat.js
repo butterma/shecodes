@@ -114,6 +114,11 @@ module.exports = (app, io) => {
                 }
             }
         });
+
+        socket.on('updateLikes', async data => {
+            Chat.update(data);
+        })
+
         socket.on('typing', (data) => {
             socket.broadcast.in(data.room).emit('typing', { data: data, isTyping: true });
         });
