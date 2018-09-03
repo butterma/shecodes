@@ -54,7 +54,7 @@ router.get('/:id',async(req,res)=>{
   });
 
 router.get('/byname/:username',async(req,res)=>{
-  debug("in get name");
+  debug("in get name"+req.params.username);
   let user=await User.REQUEST_BY_NAME(req.params.username);
   debug(user);
   if(user)
@@ -101,7 +101,7 @@ router.post('/login',function(req,res,next){
     }
    // if(res.req.user.approved){
       debug("approved");
-      res.status(200).json({'user':'Login successfully'});
+      res.status(200).json({'status':'Login successfully','user':user.username,'role':user.role});
    // }else{
    //   debug("user not approved");
    //   res.status(404).send("User not approvrd yet");
