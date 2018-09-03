@@ -15,7 +15,7 @@ const Schema = mongo.Schema;
         resetPasswordToken: String,
         resetPasswordExpires: Date,
         image: String,
-        forums: String
+        forums: Array
     });
 
     schema.pre('save', function(next) {
@@ -110,6 +110,16 @@ schema.statics.REQUEST=async function(){
     // There is no callback - bring requested at once
     debug(`request: without callback: ${JSON.stringify(args)}`);
     return this.find(...args).exec();
+};
+
+schema.statics.REQUEST_BY_NAME=async function(){
+    
+    const args = Array.from(arguments); 
+    debug(typeof arguments[0]);
+    if (arguments.length === 1 && typeof arguments[0] === "string") {
+        debug("request: by Name");
+        return this.findOne( {username: args[0]}).exec();        
+    }
 };
     schema.statics.DELETE = async function(id) {
         return this.findByIdAndRemove(id).exec();

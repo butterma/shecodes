@@ -35,6 +35,13 @@ module.exports = async (server) => {
   //app.use(siofu);
   let secret='iloveshecodesorganization';
   app.use(cookieParser(secret));
+
+  app.use(session({
+    secret:secret,
+    resave:true,
+    saveUninitialized:true,
+    cookie: {maxAge:900000, httpOnly:true,sameSite:true }
+  }));
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
  
@@ -61,27 +68,22 @@ module.exports = async (server) => {
 
   
   // example for inline express middleware logging - adding session middleware
-  app.objSession = session(secret);
+  /*app.objSession = session(secret);
   app.use((req, res, next) => {
       app.objSession(req, res, function () {
           debug(req);
           debug("Session middleware: " + !!req.session + " ID=" + req.sessionID);
           next();
       });
-  });
+  });*/
 
 
   // Parsing middleware: cookies, json and url-encoded body
-  app.cookieParser = cookieParser(secret);
-  app.use(app.cookieParser);
+ /* app.cookieParser = cookieParser(secret);
+  app.use(app.cookieParser);*/
   app.use(express.json());
   app.use(express.urlencoded({extended: false})); 
-  app.use(session({
-    secret:secret,
-    resave:true,
-    saveUninitialized:true,
-    cookie: {maxAge:900000, httpOnly:true,sameSite:true }
-  }));
+ 
 
   // Static content middleware
   app.use(express.static(path.join(__dirname, 'public')));
