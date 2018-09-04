@@ -1,7 +1,10 @@
-const router = module.exports = require('express').Router();
+var express = require('express');
+var async=require('async');
 const debug = require('debug')('shecodes:chat-route');
 const Chat = require('../model/chat');
 
+module.exports = function(){
+    var router = express.Router();
 router.get('/', async (req, res) => {
     debug('INFO: msgs' + JSON.stringify(req.query));
     if (!req.session /*|| !req.session.user*/) {
@@ -50,13 +53,15 @@ router.post('/uploads' ,function (req,res) {
     res.json("file uploaded succesfully")
 });
 
-router.post('/like/:id', function(req,res) {
+router.post('/like/:id', async(req,res)=>{
     Chat.findById(req.params.id,(err,msg)=>{
+        debug('find message to add like');
         if(!msg)
         return next(new Error('Could not load Document'));
         else{
-          debug(msg);
+          
           msg.likes.push(req.params.username);
+          debug('pushed a like');
     
           msg.save().then(msg=>{
             res.json('Update chat done');
@@ -67,14 +72,14 @@ router.post('/like/:id', function(req,res) {
       });
 })
 
-router.post('/dslike/:id', function(req,res) {
-    Chat.findById(req.params.id,(err,msg)=>{
+router.post('/dislike/:id', async(req,res)=>{
+    Chat.findById(req.params.id,(err,msg)=>{        
+        debug('find message to add dislike');
         if(!msg)
         return next(new Error('Could not load Document'));
         else{
-          debug(msg);
-          msg.dislikes.push(req.params.username);
-    
+          msg.dislikes.push(req.params.username); 
+          debug('pushed a dislike');   
           msg.save().then(msg=>{
             res.json('Update chat done');
           }).catch(err=>{
@@ -82,4 +87,7 @@ router.post('/dslike/:id', function(req,res) {
           });
         }
       });
-})
+    })
+
+    return router;
+}
