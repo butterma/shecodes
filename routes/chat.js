@@ -4,7 +4,7 @@ const debug = require('debug')('shecodes:chat-route');
 const Chat = require('../model/chat');
 
 module.exports = function(){
-    var router = express.Router();
+var router = express.Router();
 router.get('/', async (req, res) => {
     debug('INFO: msgs' + JSON.stringify(req.query));
     if (!req.session /*|| !req.session.user*/) {
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
     debug('INFO: msgs authorized');
     try {
         //Find
-        msgs = /*await*/ Chat.find({'room': req.query.room}).exec();
+        msgs = await Chat.find({'room': req.query.room}).exec();
         debug('Got from chat DB: ' + JSON.stringify(msgs));
         if (msgs instanceof Array) {
             res.json(msgs);
@@ -26,7 +26,8 @@ router.get('/', async (req, res) => {
     }
     res.json([]);
 });
-router.get('/:room',async (req,res)=>{
+router.get('/:room',function (req,res){
+    debug('in get by room');
     if (!req.session /*|| !req.session.user*/) {
         res.json("not logged on");
         res.json([]);
@@ -36,7 +37,7 @@ router.get('/:room',async (req,res)=>{
     try {
         //Find
         debug("looking for room: "+req.params.room);
-        msgs = await Chat.find({room:req.params.room}).exec();
+        msgs = /*await*/ Chat.find({room:req.params.room}).exec();
         debug('Got from chat DB: ' + JSON.stringify(msgs));
         if (msgs instanceof Array) {
             res.json(msgs);
@@ -54,6 +55,7 @@ router.post('/uploads' ,function (req,res) {
 });
 
 router.post('/like/:id', async(req,res)=>{
+    debug("in post like/id");
     Chat.findById(req.params.id,(err,msg)=>{
         debug('find message to add like');
         if(!msg)
@@ -70,7 +72,7 @@ router.post('/like/:id', async(req,res)=>{
           });
         }
       });
-})
+});
 
 router.post('/dislike/:id', async(req,res)=>{
     Chat.findById(req.params.id,(err,msg)=>{        
@@ -87,7 +89,7 @@ router.post('/dislike/:id', async(req,res)=>{
           });
         }
       });
-    })
+    });
 
     return router;
 }
