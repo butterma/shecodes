@@ -7,7 +7,7 @@ const Schema = mongo.Schema;
 
     var schema = new Schema({ 
         username: { type: String, required: true, unique: true, index: true },
-        password: { type: String, required: true },
+        password: { type: String },
         role: {type: String,enum:['Admin','Area manager','Branch manager','Course coordinator']},
         course: {type:String,enum:['python','web','android','data analysis']},
         branch: {type:String, enum:['TAU','BGU','HUJI','google','cisco','IBM','wix','technion']},

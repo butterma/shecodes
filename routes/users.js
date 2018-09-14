@@ -60,8 +60,10 @@ router.get('/byname/:username',async(req,res)=>{
   debug(user);
   if(user)
   res.json(user);
-  else
+  else{
   debug("error with find user by name");
+    res.json(user);
+}
 });
 
 router.post('/signup',upload.single('image'),async(req, res) =>{
@@ -208,7 +210,6 @@ router.get('/delete/:id',function(req,res){
 
 router.post('/update/:id',async(req,res)=>{
 
-  debug(req.session);
   User.findById(req.params.id,(err,user)=>{
     if(!user)
     return next(new Error('Could not load Document'));
@@ -218,10 +219,11 @@ router.post('/update/:id',async(req,res)=>{
       user.branch=req.body.branch;
       user.course=req.body.course;
       user.approved=req.body.approved;
-
+      debug(user);
       user.save().then(user=>{
         res.json('Update done');
       }).catch(err=>{
+        debug(err);
         res.status(400).send('Update failed');
       });
     }
