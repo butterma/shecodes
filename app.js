@@ -87,7 +87,7 @@ module.exports = async (server) => {
 
   // Static content middleware
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use('/chat', express.static(path.join(__dirname, 'chat', 'dist', 'chat')));
+  //app.use('/chat', express.static(path.join(__dirname, 'chat', 'dist', 'chat')));
 
   // catch 404 and forward to error handler
   app.use(function (req, res, next) {
