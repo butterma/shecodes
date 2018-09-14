@@ -227,6 +227,22 @@ router.post('/update/:id',async(req,res)=>{
     }
   });
 });
+
+router.post('/addForum/:username',async(req,res)=>{
+  debug('in add forum '+req.params.username);
+  let user=await User.REQUEST_BY_NAME(req.params.username);
+  if(!user)
+    return next(new Error('Could not find user: '+req.params.username));
+  else{
+    user.forums.push(req.body.forum);
+    debug(user);
+    user.save().then(user=>{
+      res.json('update done');
+    }).catch(err=>{
+      res.status(400).send(err);
+    });
+  }
+});
 //module.exports=router;
 
 // facebook -------------------------------
