@@ -117,7 +117,7 @@ schema.statics.REQUEST_BY_NAME=async function(){
     const args = Array.from(arguments); 
     debug(typeof arguments[0]);
     if (arguments.length === 1 && typeof arguments[0] === "string") {
-        debug("request: by Name");
+        debug("request: by Name " + args[0]);
         return this.findOne( {username: args[0]}).exec();        
     }
 };

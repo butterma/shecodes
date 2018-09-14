@@ -5,6 +5,7 @@ const Chat = require('../model/chat');
 
 module.exports = function(){
 var router = express.Router();
+
 router.get('/', async (req, res) => {
     debug('INFO: msgs' + JSON.stringify(req.query));
     if (!req.session /*|| !req.session.user*/) {
@@ -26,8 +27,9 @@ router.get('/', async (req, res) => {
     }
     res.json([]);
 });
-router.get('/:room',function (req,res){
-    debug('in get by room');
+
+router.get('/rooms/:room',async (req,res) =>{
+    debug("in get by room");
     if (!req.session /*|| !req.session.user*/) {
         res.json("not logged on");
         res.json([]);
@@ -36,7 +38,7 @@ router.get('/:room',function (req,res){
     debug('INFO: msgs authorized');
     try {
         //Find
-        debug("looking for room: "+req.params.room);
+        debug("looking for room: " + req.params.room);
         msgs = /*await*/ Chat.find({room:req.params.room}).exec();
         debug('Got from chat DB: ' + JSON.stringify(msgs));
         if (msgs instanceof Array) {
@@ -89,7 +91,7 @@ router.post('/dislike/:id', async(req,res)=>{
           });
         }
       });
-    });
+});
 
-    return router;
+return router;
 }

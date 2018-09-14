@@ -54,13 +54,14 @@ router.get('/:id',async(req,res)=>{
   });
 
 router.get('/byname/:username',async(req,res)=>{
-  debug("in get name"+req.params.username);
+  debug("in get name "+req.params.username);
   let user=await User.REQUEST_BY_NAME(req.params.username);
+  debug(req.params);
   debug(user);
   if(user)
   res.json(user);
   else
-  debug(err);
+  debug("error with find user by name");
 });
 
 router.post('/signup',upload.single('image'),async(req, res) =>{
