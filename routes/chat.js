@@ -37,7 +37,7 @@ var router = express.Router();
         try {
             //Find
             debug("looking for room: " + req.params.room);
-            msgs = /*await*/ Chat.find({room:req.params.room}).exec();
+            msgs = await Chat.find({room:req.params.room}).exec();
             debug('Got from chat DB: ' + JSON.stringify(msgs));
             if (msgs instanceof Array) {
                 res.json(msgs);
@@ -55,15 +55,15 @@ var router = express.Router();
     });
 
     router.post('/like/:id', async(req,res)=>{
-        debug("in post like/id");
+        debug("in post like/id its id: " + req.params.id);
         Chat.findById(req.params.id,(err,msg)=>{
-            debug('find message to add like');
+            
             if(!msg)
-            return next(new Error('Could not load Document'));
+            debug('couldnt find message to add like');
             else{
             
-            msg.likes.push(req.params.username);
-            debug('pushed a like');
+            msg.likes.push(JSON.parse(req.body.username).user);
+            debug('pushed a like to' + JSON.stringify(msg));
         
             msg.save().then(msg=>{
                 res.json('Update chat done');

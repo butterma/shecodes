@@ -7,7 +7,7 @@ module.exports = (app, io) => {
 //app.use(siofu.router);
     // "Globals"
     const defaultRoom = 'Web';
-    const rooms = ["Web", "Android", "Python", "Data analysis"];
+    const rooms = ["Web", "Android", "Python", "Data analysis", "Career"];
 
     chat.on('error', error => { debug('Chat error ' + error); });
 
@@ -66,8 +66,8 @@ module.exports = (app, io) => {
                 //Emit the rooms array
                 debug("socket login response - sending: " + JSON.stringify(rooms));
                // fn({ rooms: rooms });
-                //New user joins the default room
-                currentRoom = data.room = defaultRoom;
+                //New user joins the room
+                currentRoom = data.room;
                 socket.join(currentRoom);
                 //Tell all those in the room that a new user joined
                 debug('emit in ' + currentRoom + ", joined: " + JSON.stringify(data));
