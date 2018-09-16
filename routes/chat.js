@@ -75,12 +75,11 @@ var router = express.Router();
     });
 
     router.post('/dislike/:id', async(req,res)=>{
-        Chat.findById(req.params.id,(err,msg)=>{        
-            debug('find message to add dislike');
+        Chat.findById(req.params.id,(err,msg)=>{  
             if(!msg)
-            return next(new Error('Could not load Document'));
+            debug('couldnt find message to add dislike');
             else{
-            msg.dislikes.push(req.params.username); 
+            msg.dislikes.push(JSON.parse(req.body.username).user); 
             debug('pushed a dislike');   
             msg.save().then(msg=>{
                 res.json('Update chat done');

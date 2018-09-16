@@ -1,6 +1,7 @@
 const debug = require('debug')("shecodes:socket");
 var Chat = require('../model/chat');
 var siofu = require('socketio-file-upload');
+//var redis = require('socket.io-redis');
 
 module.exports = (app, io) => {
     const chat = io.of("/chat");
@@ -10,27 +11,13 @@ module.exports = (app, io) => {
     const rooms = ["Web", "Android", "Python", "Data analysis", "Career"];
 
     chat.on('error', error => { debug('Chat error ' + error); });
-
-    /*chat.use((socket, next) => {
-        //console.log(socket);
-        let req = socket.handshake;
-       // let res = { end: () => { } };
-        next();
-       /* app.cookieParser(req, res, () => {
-            app.session(req, res, function () {
-                debug("Chat middleware: " + JSON.stringify(socket.id) + " ID=" + req.sessionID + " user=" + req.session.user);
-                next();
-            });
-        });*/
-    //});
-    
-
+  
     chat.on('connection', socket => {
         
         //var uploader = new siofu();
         //uploader.dir = "/uploads";
         //uploader.listen(socket);
-        
+
         socket.on('disconnect', () => { debug("socket disconnect: " + socket.id); });
 
         //socket.set('transports', ['websocket']);
@@ -61,6 +48,11 @@ module.exports = (app, io) => {
         
         //Listens for new user
         socket.on('join', (data) => {
+            
+    chat.clients((error, clients) => {
+        if (error) throw error;
+        debug(clients);
+      });
             if (!isLogin()) {
                 debug("socket login: " + req.headers.cookie + " - " + JSON.stringify(data));
                 //Emit the rooms array
@@ -109,6 +101,20 @@ module.exports = (app, io) => {
                     });
                     debug('emit in ' + currentRoom + ", message: " + JSON.stringify(msg));
                     socket.to(currentRoom).emit('message', msg)
+                    
+                    // to one room
+                    // socket.to('others').emit('an event', { some: 'data' });
+
+                    // to multiple rooms
+                    // socket.to('room1').to('room2').emit('hello');
+
+                    // a private message to another socket
+                    // socket.to(/* another socket id */).emit('hey');
+
+                    // WARNING: `socket.to(socket.id).emit()` will NOT work, as it will send to everyone in the room
+                    // named `socket.id` but the sender. Please use the classic `socket.emit()` instead.
+
+                    
                 } catch (err) {
                     debug("Failed saving chat message: ", err);
                 }
@@ -123,44 +129,17 @@ module.exports = (app, io) => {
             socket.broadcast.in(data.room).emit('typing', { data: data, isTyping: true });
         });
     });
+
+    chat.clients((error, clients) => {
+        if (error) throw error;
+        debug(clients);
+      });
+
+    //By implementing the Redis Adapter:
+    //io.adapter(redis({ host: 'localhost', port: 6379 }));
+    // you can then emit messages from any other process to any channel
+    /*var io = require('socket.io-emitter')({ host: '127.0.0.1', port: 6379 });
+    setInterval(function(){
+          io.emit('time', new Date);
+        }, 5000);*/
 };
-
-
-//from another place (:|)
-//https://medium.com/@parthkamaria/building-a-chat-app-with-mean-stack-and-socket-io-c73b012b9fc9
-
-/*
-io.sockets.on('connection', (socket) => {
-    socket.on('join', (data) => {
-        socket.join(data.room);
-        chatRooms.find({}).toArray((err, rooms) => {
-            if (err) {
-                console.log(err);
-                return false;
-            }
-            count = 0;
-            rooms.forEach((room) => {
-                if (room.name == data.room) {
-                    count++;
-                }
-            });
-            if (count == 0) {
-                //create new room
-                chatRooms.insert({ name: data.room, messages: [] });
-            }
-        });
-    });
-    socket.on('message', (data) => {
-        io.in(data.room).emit('new message', { user: data.user, message: data.message });
-        chatRooms.update({ name: data.room }, { $push: { messages: { user: data.user, message: data.message } } }, (err, res) => {
-            if (err) {
-                console.log(err);
-                return false;
-            }
-            console.log("Document updated");
-        });
-    });
-    socket.on('typing', (data) => {
-        socket.broadcast.in(data.room).emit('typing', { data: data, isTyping: true });
-    });
-});*/
