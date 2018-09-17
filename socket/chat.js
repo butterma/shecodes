@@ -90,14 +90,14 @@ module.exports = (app, io) => {
             if (isLogin()) {
                 //Create message and Save it to database
                 debug("socket message: saving");
-                debug(data);
                 try {
                     let msg = await Chat.CREATE({
                         username: data.user,
                         content: data.message,
                         room: currentRoom,
                         created: new Date(),
-                        file: data.file
+                        file: data.file,
+                        fileName: data.fileName
                     });
                     debug('emit in ' + currentRoom + ", message: " + JSON.stringify(msg));
                     socket.to(currentRoom).emit('message', msg)

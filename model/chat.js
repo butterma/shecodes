@@ -7,6 +7,7 @@ var schema = new mongo.Schema({
         username: String,
         room: String,
         file: Buffer,
+        fileName: String,
         likes: Array,
         dislikes:Array
     });
