@@ -71,7 +71,7 @@ router.post('/signup',upload.single('image'),async(req, res) =>{
   let user=new User(req.body);
   console.log("try");
   if (!user.image)
-    user.image = req.file.path.slice(6);
+    user.image = "http://localhost:3000/uploads/" + req.file.path.slice(15);
   console.log(user);
   console.log("image: " + user.image);
   
