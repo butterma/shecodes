@@ -15,7 +15,7 @@ var router = express.Router();
         try {
             //Find
             msgs = await Chat.find({'room': req.query.room}).exec();
-            debug('Got from chat DB: ' + JSON.stringify(msgs));
+            debug('Got from chat DB');
             if (msgs instanceof Array) {
                 res.json(msgs);
                 return;
