@@ -208,6 +208,23 @@ router.get('/delete/:id',function(req,res){
   });
 });
 
+router.post('/sendContactMail',function(req,res){
+  debug(req.body.mail)
+  var mailOptions = {
+    from: 'shecodes18@gmail.com',
+    to: req.body.mail,
+    subject: 'Thanks for your feedback',
+    html:'<h3>Dear '+req.body.name+'</h3></br><h5>we got your message</h5><br><h5>our representative will contact you as soon as possible</h5></br><h5>she codes; team</h5>'
+  };
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+        console.log("there is an error");
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+});
+});
 router.post('/update/:id',async(req,res)=>{
 
   User.findById(req.params.id,(err,user)=>{

@@ -38,7 +38,6 @@ var router = express.Router();
             //Find
             debug("looking for room: " + req.params.room);
             msgs = await Chat.find({room:req.params.room}).exec();
-            debug('Got from chat DB: ' + JSON.stringify(msgs));
             if (msgs instanceof Array) {
                 res.json(msgs);
                 return;
