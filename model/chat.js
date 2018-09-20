@@ -13,7 +13,7 @@ var schema = new mongo.Schema({
     });
 
     schema.statics.CREATE=async function (chat) {
-        debug(chat);
+        debug("chat message created");
         return this.create(chat);
      };
     
