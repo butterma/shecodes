@@ -102,13 +102,13 @@ router.post('/login',function(req,res,next){
     if(loginErr){
       return next(loginErr);
     }
-   // if(res.req.user.approved){
+    if(user.approved){
       debug("approved");
-      res.status(200).json({'status':'Login successfully','user':user.username,'role':user.role});
-   // }else{
-   //   debug("user not approved");
-   //   res.status(404).send("User not approvrd yet");
-   // }
+      res.status(200).json({'status':'Login successfully','user':user.username,'role':user.role,'approved':user.approved});
+    }else{
+      debug("user not approved");
+      res.status(403).send("User not approved yet, can't log in");
+    }
   });
 })(req,res,next);  
 });
